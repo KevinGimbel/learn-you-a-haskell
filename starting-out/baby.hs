@@ -5,6 +5,9 @@
 -- fn_name fn_val = fn_body
 -- double x = x * 2
 
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+import Distribution.Simple.Program.HcPkg (list)
+{-# HLINT ignore "Use camelCase" #-}
 
 -- simple function which takes x
 -- and returns x + x
@@ -104,3 +107,35 @@ repeat_take = take 10 (repeat 5) -- [5,5,5,5,5,5,5,5,5,5]
 
 -- replicate replicates the given number x times
 replicate_output = replicate 3 10 -- [10,10,10]
+
+-- list comprehension
+-- syntax: [output function | input set, predicate]
+list_comp = [x*2 | x <- [1..10]]
+
+list_comp_with_predicate = [x*3 | x <- [3,6..30], even x]
+
+-- all numbers from 50 to 100 which when divided by 7 are 3. 
+list_comp_mod_7 = [ x | x <- [50..100], x `mod` 7 == 3] -- [52,59,66,73,80,87,94]
+
+-- exclude results with x /= y as predicate
+list_comp_exclude = [ x | x <- [10..20], x /= 11, x/= 14, x/=17]
+
+-- get values from two lists
+list_comp_multi_list = [x*y | x <- [1,3,5,7], y <- [2,4,6,8] {-, predicate -}]
+
+-- take from list of words
+word_fun=do
+  let adj = ["cool", "rad", "funny"]
+  let nouns = ["wizard", "frog", "painter"]
+  [ a ++ " " ++ n | a <- adj, n <- nouns]
+-- returns the following list 
+-- ["cool wizard","cool frog","cool painter","rad wizard","rad frog","rad painter","funny wizard","funny frog","funny painter"]
+
+-- custom length function: take 1 for each element of a list, then sum
+-- "_ <- xs" takes the element but doesn't assign it to a number
+length' xs = sum [1 | _ <- xs]
+len_test = length' [1,2,3] -- 3
+
+-- list comps can be used to alter strings :mind_blown: - because strings are just lists of chars!
+removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']]
+test_removeNonUppercase = removeNonUppercase "I dont LIKE FROGS!" -- ILIKEFROGS
